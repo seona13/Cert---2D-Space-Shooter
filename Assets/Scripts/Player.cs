@@ -13,6 +13,9 @@ public class Player : MonoBehaviour
 	private float _moveSpeed = 10f;
 	private Vector3 _startPos = new Vector3(0, -2.5f, 0);
 	private Vector3 _moveVec = Vector3.zero; // movement direction of player
+	[SerializeField]
+	private float _fireRate = 0.5f;
+	private float _nextFire = 0;
 
 
 
@@ -39,13 +42,11 @@ public class Player : MonoBehaviour
 
 	public void OnFire()
 	{
-		FireLaser();
-	}
-
-
-	void FireLaser()
-	{
-		Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+		if (Time.time > _nextFire)
+		{
+			_nextFire = Time.time + _fireRate;
+			Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+		}
 	}
 
 

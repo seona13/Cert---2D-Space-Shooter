@@ -6,22 +6,24 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-	public float moveSpeed = 10f;
-
-	private Vector3 startPos = new Vector3(0, -2.5f, 0);
-	private Vector3 moveVec = Vector3.zero; // movement direction of player
+	[SerializeField]
+	private GameObject _laserPrefab;
+	[SerializeField]
+	private float _moveSpeed = 10f;
+	private Vector3 _startPos = new Vector3(0, -2.5f, 0);
+	private Vector3 _moveVec = Vector3.zero; // movement direction of player
 
 
 
 	void Start()
 	{
-		transform.position = startPos;
+		transform.position = _startPos;
 	}
 
 
 	void Update()
 	{
-		transform.Translate(moveVec * moveSpeed * Time.deltaTime);
+		transform.Translate(_moveVec * _moveSpeed * Time.deltaTime);
 		RespectBounds();
 	}
 
@@ -30,7 +32,19 @@ public class Player : MonoBehaviour
 	{
 		Vector2 inputVec = input.Get<Vector2>();
 
-		moveVec = new Vector3(inputVec.x, inputVec.y, 0);
+		_moveVec = new Vector3(inputVec.x, inputVec.y, 0);
+	}
+
+
+	public void OnFire()
+	{
+		FireLaser();
+	}
+
+
+	void FireLaser()
+	{
+		Instantiate(_laserPrefab, transform.position, Quaternion.identity);
 	}
 
 

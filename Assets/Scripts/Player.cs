@@ -6,17 +6,39 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+	// LASER INFO
 	[SerializeField]
 	private GameObject _laserPrefab;
 	private Vector3 _laserOffset = new Vector3(0, 0.7f, 0);
+	private float _fireRate = 0.5f;
+	private float _nextFire = 0;
+
+	// MOVING AND POSITIONING
 	[SerializeField]
 	private float _moveSpeed = 10f;
 	private Vector3 _startPos = new Vector3(0, -2.5f, 0);
 	private Vector3 _moveVec = Vector3.zero; // movement direction of player
-	[SerializeField]
-	private float _fireRate = 0.5f;
-	private float _nextFire = 0;
+	private float _screenLeft = -11f;
+	private float _screenRight = 11f;
+	private float _screenBottom = -4f;
+	private float _playFieldTop = 0;
 
+	// PLAYER DATA
+	[SerializeField]
+	private int _lives = 3;
+
+
+
+	void OnEnable()
+	{
+		Enemy.onPlayerCollision += Damage;
+	}
+
+
+	void OnDisable()
+	{
+		Enemy.onPlayerCollision -= Damage;
+	}
 
 
 	void Start()
@@ -54,20 +76,31 @@ public class Player : MonoBehaviour
 	{
 		float newX = transform.position.x;
 
-		if (transform.position.x >= 11f)
+		if (transform.position.x >= _screenRight)
 		{
-			newX = -11f;
+			newX = _screenLeft;
 		}
-		else if (transform.position.x <= -11f)
+		else if (transform.position.x <= _screenLeft)
 		{
-			newX = 11f;
+			newX = _screenRight;
 		}
 
-		float newY = Mathf.Clamp(transform.position.y, -4f, 0);
+		float newY = Mathf.Clamp(transform.position.y, _screenBottom, _playFieldTop);
 
 		if (newX != transform.position.x || newY != transform.position.y)
 		{
 			transform.position = new Vector3(newX, newY, 0);
+		}
+	}
+
+
+	void Damage()
+	{
+		_lives--;
+
+		if (_lives < 1)
+		{
+			Destroy(gameObject);
 		}
 	}
 }

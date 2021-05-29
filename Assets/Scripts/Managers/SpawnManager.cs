@@ -11,6 +11,18 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 
 
 
+	private void OnEnable()
+	{
+		Player.onPlayerDied += OnGameOver;
+	}
+
+
+	private void OnDisable()
+	{
+		Player.onPlayerDied -= OnGameOver;
+	}
+
+
 	void Start()
 	{
 		if (_running == false)
@@ -33,5 +45,11 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 		}
 
 		_running = false;
+	}
+
+
+	void OnGameOver()
+	{
+		_spawning = false;
 	}
 }

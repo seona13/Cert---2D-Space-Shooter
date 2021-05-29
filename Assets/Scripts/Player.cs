@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,8 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+	public static event Action onPlayerDied;
+
 	// LASER INFO
 	[SerializeField]
 	private GameObject _laserPrefab;
@@ -101,6 +104,7 @@ public class Player : MonoBehaviour
 
 		if (_lives < 1)
 		{
+			onPlayerDied?.Invoke();
 			Destroy(gameObject);
 		}
 	}

@@ -67,7 +67,8 @@ public class Player : MonoBehaviour
 		if (Time.time > _nextFire)
 		{
 			_nextFire = Time.time + _fireRate;
-			Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+			GameObject laser = PoolManager.Instance.RequestLaser();
+			laser.transform.position = transform.position + _laserOffset;
 		}
 	}
 

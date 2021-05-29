@@ -23,7 +23,7 @@ public class Laser : MonoBehaviour
 
 		if (transform.position.y >= _destroyPos)
 		{
-			Destroy(gameObject);
+			PoolManager.Instance.DespawnLaser(gameObject);
 		}
 	}
 }

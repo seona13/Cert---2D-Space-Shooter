@@ -37,12 +37,12 @@ public class Enemy : MonoBehaviour
 		if (other.CompareTag("Player"))
 		{
 			onPlayerCollision?.Invoke();
-			Destroy(gameObject);
+			PoolManager.Instance.DespawnEnemy(gameObject);
 		}
 		else if (other.CompareTag("Laser"))
 		{
-			Destroy(other.gameObject);
-			Destroy(gameObject);
+			PoolManager.Instance.DespawnLaser(other.gameObject);
+			PoolManager.Instance.DespawnEnemy(gameObject);
 		}
 	}
 }

@@ -10,11 +10,18 @@ public class Player : MonoBehaviour
 	public static event Action onPlayerDied;
 
 	// LASER INFO
-	[SerializeField]
-	private GameObject _laserPrefab;
-	private Vector3 _laserOffset = new Vector3(0, 0.7f, 0);
+	private Vector3 _laserOffset = new Vector3(0, 1.1f, 0);
 	private float _fireRate = 0.5f;
 	private float _nextFire = 0;
+
+	// POWER UPS
+	[SerializeField]
+	private float _powerupDuration = 5f;
+	private WaitForSeconds _powerupWaitDuration;
+	[SerializeField]
+	private GameObject _tripleShotPrefab;
+	[SerializeField]
+	private bool _tripleShotActive;
 
 	// MOVING AND POSITIONING
 	[SerializeField]
@@ -35,18 +42,21 @@ public class Player : MonoBehaviour
 	void OnEnable()
 	{
 		Enemy.onPlayerCollision += Damage;
+		Powerup.onPowerupCollected += CollectPowerup;
 	}
 
 
 	void OnDisable()
 	{
 		Enemy.onPlayerCollision -= Damage;
+		Powerup.onPowerupCollected -= CollectPowerup;
 	}
 
 
 	void Start()
 	{
 		transform.position = _startPos;
+		_powerupWaitDuration = new WaitForSeconds(_powerupDuration);
 	}
 
 
@@ -70,8 +80,17 @@ public class Player : MonoBehaviour
 		if (Time.time > _nextFire)
 		{
 			_nextFire = Time.time + _fireRate;
-			GameObject laser = PoolManager.Instance.RequestLaser();
-			laser.transform.position = transform.position + _laserOffset;
+
+			if (_tripleShotActive)
+			{
+				GameObject shot = Instantiate(_tripleShotPrefab);
+				shot.transform.position = transform.position;
+			}
+			else
+			{
+				GameObject laser = PoolManager.Instance.RequestLaser();
+				laser.transform.position = transform.position + _laserOffset;
+			}
 		}
 	}
 
@@ -107,5 +126,19 @@ public class Player : MonoBehaviour
 			onPlayerDied?.Invoke();
 			Destroy(gameObject);
 		}
+	}
+
+
+	IEnumerator PowerupActive()
+	{
+		_tripleShotActive = true;
+		yield return _powerupWaitDuration;
+		_tripleShotActive = false;
+	}
+
+
+	void CollectPowerup()
+	{
+		StartCoroutine(PowerupActive());
 	}
 }

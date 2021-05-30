@@ -7,7 +7,8 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 {
 	private bool _running;
 	private bool _spawning;
-	private WaitForSeconds _spawnRate = new WaitForSeconds(4.5f);
+	private WaitForSeconds _enemySpawnRate = new WaitForSeconds(4.5f);
+	private WaitForSeconds _powerupSpawnRate = new WaitForSeconds(7f);
 
 
 
@@ -29,6 +30,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 		{
 			_spawning = true;
 			StartCoroutine(SpawnEnemy());
+			StartCoroutine(SpawnPowerup());
 			_running = true;
 		}
 	}
@@ -41,7 +43,21 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 			GameObject enemy = PoolManager.Instance.RequestEnemy();
 			enemy.transform.position = new Vector3(Random.Range(-9f, 9f), 7.5f, 0);
 
-			yield return _spawnRate;
+			yield return _enemySpawnRate;
+		}
+
+		_running = false;
+	}
+
+
+	IEnumerator SpawnPowerup()
+	{
+		while (_spawning)
+		{
+			GameObject powerup = PoolManager.Instance.RequestPowerupTripleShot();
+			powerup.transform.position = new Vector3(Random.Range(-9f, 9f), 7.5f, 0);
+
+			yield return _powerupSpawnRate;
 		}
 
 		_running = false;

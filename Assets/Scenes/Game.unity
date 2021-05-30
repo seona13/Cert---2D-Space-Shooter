@@ -198,8 +198,10 @@ MonoBehaviour:
   _defaultPoolSize: 10
   _enemyPrefab: {fileID: 1234509977085386926, guid: a425a9fe2d887e1428aef84092ce112b, type: 3}
   _laserPrefab: {fileID: 7023072598996423010, guid: ef8447798d5fb524d96fbbbac22ef9ba, type: 3}
+  _PowerupTripleShotPrefab: {fileID: 7817283715309658373, guid: 78db336f8ef52a942b2e5bbd8298d140, type: 3}
   _enemyContainer: {fileID: 1376883326}
   _laserContainer: {fileID: 680295782}
+  _powerupContainer: {fileID: 0}
 --- !u!4 &403569845
 Transform:
   m_ObjectHideFlags: 0
@@ -461,11 +463,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1407518169}
-  - component: {fileID: 1407518168}
   - component: {fileID: 1407518167}
-  - component: {fileID: 1407518164}
+  - component: {fileID: 1407518168}
   - component: {fileID: 1407518166}
   - component: {fileID: 1407518165}
+  - component: {fileID: 1407518164}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -562,7 +564,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f04d2a0c415faa34084ff65e14e88b94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _laserPrefab: {fileID: 7023072598996423010, guid: ef8447798d5fb524d96fbbbac22ef9ba, type: 3}
+  _powerupDuration: 5
+  _tripleShotPrefab: {fileID: 6220263482337804620, guid: 954a086be678f8442b78b4c448ef1c5c, type: 3}
+  _tripleShotActive: 0
   _moveSpeed: 10
   _lives: 3
 --- !u!212 &1407518168

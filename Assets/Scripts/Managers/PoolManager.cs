@@ -11,6 +11,8 @@ public class PoolManager : MonoSingleton<PoolManager>
 	private GameObject _enemyPrefab;
 	[SerializeField]
 	private GameObject _laserPrefab;
+	[SerializeField]
+	private GameObject _PowerupTripleShotPrefab;
 
 	[Space(10)]
 
@@ -18,9 +20,12 @@ public class PoolManager : MonoSingleton<PoolManager>
 	private Transform _enemyContainer;
 	[SerializeField]
 	private Transform _laserContainer;
+	[SerializeField]
+	private Transform _powerupContainer;
 
 	private List<GameObject> _enemyPool;
 	private List<GameObject> _laserPool;
+	private List<GameObject> _powerupTripleShotPool;
 
 
 
@@ -29,6 +34,7 @@ public class PoolManager : MonoSingleton<PoolManager>
 		base.Init();
 		_enemyPool = new List<GameObject>();
 		_laserPool = new List<GameObject>();
+		_powerupTripleShotPool = new List<GameObject>();
 	}
 
 
@@ -116,5 +122,45 @@ public class PoolManager : MonoSingleton<PoolManager>
 	public void DespawnLaser(GameObject laser)
 	{
 		laser.SetActive(false);
+	}
+
+
+	List<GameObject> GeneratePowerupTripleShots(int amount)
+	{
+		for (int i = 0; i < amount; i++)
+		{
+			GameObject powerup = Instantiate(_PowerupTripleShotPrefab);
+			powerup.transform.parent = _powerupContainer;
+			powerup.SetActive(false);
+
+			_powerupTripleShotPool.Add(powerup);
+		}
+
+		return _powerupTripleShotPool;
+	}
+
+
+	public GameObject RequestPowerupTripleShot()
+	{
+		foreach (GameObject powerup in _powerupTripleShotPool)
+		{
+			if (powerup.activeInHierarchy == false)
+			{
+				powerup.SetActive(true);
+				return powerup;
+			}
+		}
+
+		GameObject newPowerup = Instantiate(_PowerupTripleShotPrefab);
+		newPowerup.transform.parent = _powerupContainer;
+		_powerupTripleShotPool.Add(newPowerup);
+
+		return newPowerup;
+	}
+
+
+	public void DespawnPowerupTripleShot(GameObject powerup)
+	{
+		powerup.SetActive(false);
 	}
 }

@@ -23,7 +23,14 @@ public class Laser : MonoBehaviour
 
 		if (transform.position.y >= _destroyPos)
 		{
-			PoolManager.Instance.DespawnLaser(gameObject);
+			if (transform.parent.name == "TripleShot(Clone)")
+			{
+				Destroy(transform.parent.gameObject);
+			}
+			else
+			{
+				PoolManager.Instance.DespawnLaser(gameObject);
+			}
 		}
 	}
 }

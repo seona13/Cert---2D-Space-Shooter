@@ -162,7 +162,6 @@ public class PoolManager : MonoSingleton<PoolManager>
 		}
 
 		_powerupCounter = 0;
-		Debug.Log(_powerupCounter);
 		GameObject firstPowerup = _powerupPool[_powerupCounter];
 		firstPowerup.SetActive(true);
 		return firstPowerup;

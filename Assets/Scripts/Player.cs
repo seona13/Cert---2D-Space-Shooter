@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
 	[SerializeField]
 	private bool _speedActive;
 	[SerializeField]
+	private GameObject _shieldVisual;
+	[SerializeField]
 	private bool _shieldActive;
 
 	// MOVING AND POSITIONING
@@ -133,6 +135,13 @@ public class Player : MonoBehaviour
 
 	void Damage()
 	{
+		if (_shieldActive)
+		{
+			_shieldVisual.SetActive(false);
+			_shieldActive = false;
+			return;
+		}
+
 		_lives--;
 
 		if (_lives < 1)
@@ -154,6 +163,8 @@ public class Player : MonoBehaviour
 				StartCoroutine(SpeedActive());
 				break;
 			case PowerupType.Shield:
+				_shieldVisual.SetActive(true);
+				_shieldActive = true;
 				break;
 			default:
 				Debug.LogWarning("Player::CollectPowerup -- Unknown powerup type detected");

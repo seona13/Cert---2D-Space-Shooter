@@ -54,7 +54,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 	{
 		while (_spawning)
 		{
-			GameObject powerup = PoolManager.Instance.RequestPowerupTripleShot();
+			GameObject powerup = PoolManager.Instance.RequestPowerup();
 			powerup.transform.position = new Vector3(Random.Range(-9f, 9f), 7.5f, 0);
 
 			yield return _powerupSpawnRate;

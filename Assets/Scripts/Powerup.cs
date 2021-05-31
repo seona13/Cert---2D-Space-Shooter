@@ -4,10 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+public enum PowerupType { TripleShot, Speed, Shield }
+
 public class Powerup : MonoBehaviour
 {
-	public static event Action onPowerupCollected;
+	public static event Action<PowerupType> onPowerupCollected;
 
+	[SerializeField]
+	private PowerupType _type;
 	[SerializeField]
 	private float _speed = 3f;
 	private float _destroyPos = -5.5f;
@@ -26,7 +30,7 @@ public class Powerup : MonoBehaviour
 
 		if (transform.position.y <= _destroyPos)
 		{
-			PoolManager.Instance.DespawnPowerupTripleShot(gameObject);
+			PoolManager.Instance.DespawnPowerup(gameObject);
 		}
 	}
 
@@ -35,8 +39,8 @@ public class Powerup : MonoBehaviour
 	{
 		if (other.CompareTag("Player"))
 		{
-			onPowerupCollected?.Invoke();
-			PoolManager.Instance.DespawnPowerupTripleShot(gameObject);
+			onPowerupCollected?.Invoke(_type);
+			PoolManager.Instance.DespawnPowerup(gameObject);
 		}
 	}
 }

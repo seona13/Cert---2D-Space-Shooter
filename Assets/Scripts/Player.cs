@@ -22,6 +22,12 @@ public class Player : MonoBehaviour
 	private GameObject _tripleShotPrefab;
 	[SerializeField]
 	private bool _tripleShotActive;
+	[SerializeField]
+	private float _speedMultiplier = 3f;
+	[SerializeField]
+	private bool _speedActive;
+	[SerializeField]
+	private bool _shieldActive;
 
 	// MOVING AND POSITIONING
 	[SerializeField]
@@ -62,7 +68,15 @@ public class Player : MonoBehaviour
 
 	void Update()
 	{
-		transform.Translate(_moveVec * _moveSpeed * Time.deltaTime);
+		if (_speedActive)
+		{
+			transform.Translate(_moveVec * _moveSpeed * _speedMultiplier * Time.deltaTime);
+		}
+		else
+		{
+			transform.Translate(_moveVec * _moveSpeed * Time.deltaTime);
+		}
+
 		RespectBounds();
 	}
 
@@ -129,7 +143,26 @@ public class Player : MonoBehaviour
 	}
 
 
-	IEnumerator PowerupActive()
+	void CollectPowerup(PowerupType type)
+	{
+		switch (type)
+		{
+			case PowerupType.TripleShot:
+				StartCoroutine(TripleShotActive());
+				break;
+			case PowerupType.Speed:
+				StartCoroutine(SpeedActive());
+				break;
+			case PowerupType.Shield:
+				break;
+			default:
+				Debug.LogWarning("Player::CollectPowerup -- Unknown powerup type detected");
+				break;
+		}
+	}
+
+
+	IEnumerator TripleShotActive()
 	{
 		_tripleShotActive = true;
 		yield return _powerupWaitDuration;
@@ -137,8 +170,10 @@ public class Player : MonoBehaviour
 	}
 
 
-	void CollectPowerup()
+	IEnumerator SpeedActive()
 	{
-		StartCoroutine(PowerupActive());
+		_speedActive = true;
+		yield return _powerupWaitDuration;
+		_speedActive = false;
 	}
 }

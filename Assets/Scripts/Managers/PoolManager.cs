@@ -12,7 +12,7 @@ public class PoolManager : MonoSingleton<PoolManager>
 	[SerializeField]
 	private GameObject _laserPrefab;
 	[SerializeField]
-	private GameObject _PowerupTripleShotPrefab;
+	private GameObject[] _powerupPrefabs;
 
 	[Space(10)]
 
@@ -25,7 +25,9 @@ public class PoolManager : MonoSingleton<PoolManager>
 
 	private List<GameObject> _enemyPool;
 	private List<GameObject> _laserPool;
-	private List<GameObject> _powerupTripleShotPool;
+	private List<GameObject> _powerupPool;
+
+	private int _powerupCounter = 0;
 
 
 
@@ -34,7 +36,7 @@ public class PoolManager : MonoSingleton<PoolManager>
 		base.Init();
 		_enemyPool = new List<GameObject>();
 		_laserPool = new List<GameObject>();
-		_powerupTripleShotPool = new List<GameObject>();
+		_powerupPool = new List<GameObject>();
 	}
 
 
@@ -42,9 +44,11 @@ public class PoolManager : MonoSingleton<PoolManager>
 	{
 		GenerateEnemies(_defaultPoolSize);
 		GenerateLasers(_defaultPoolSize);
+		GeneratePowerups(_defaultPoolSize);
 	}
 
 
+	#region Enemies
 	List<GameObject> GenerateEnemies(int amount)
 	{
 		for (int i = 0; i < amount; i++)
@@ -83,8 +87,10 @@ public class PoolManager : MonoSingleton<PoolManager>
 	{
 		enemy.SetActive(false);
 	}
+	#endregion
 
 
+	#region Lasers
 	List<GameObject> GenerateLasers(int amount)
 	{
 		for (int i = 0; i < amount; i++)
@@ -123,44 +129,49 @@ public class PoolManager : MonoSingleton<PoolManager>
 	{
 		laser.SetActive(false);
 	}
+	#endregion
 
 
-	List<GameObject> GeneratePowerupTripleShots(int amount)
+	#region Powerups
+	List<GameObject> GeneratePowerups(int amount)
 	{
 		for (int i = 0; i < amount; i++)
 		{
-			GameObject powerup = Instantiate(_PowerupTripleShotPrefab);
+			GameObject powerup = Instantiate(_powerupPrefabs[Random.Range(0, _powerupPrefabs.Length)]);
 			powerup.transform.parent = _powerupContainer;
 			powerup.SetActive(false);
 
-			_powerupTripleShotPool.Add(powerup);
+			_powerupPool.Add(powerup);
 		}
 
-		return _powerupTripleShotPool;
+		return _powerupPool;
 	}
 
 
-	public GameObject RequestPowerupTripleShot()
+	public GameObject RequestPowerup()
 	{
-		foreach (GameObject powerup in _powerupTripleShotPool)
+		if (_powerupCounter < _powerupPool.Count)
 		{
-			if (powerup.activeInHierarchy == false)
+			if (_powerupPool[_powerupCounter].activeInHierarchy == false)
 			{
+				GameObject powerup = _powerupPool[_powerupCounter];
 				powerup.SetActive(true);
+				_powerupCounter++;
 				return powerup;
 			}
 		}
 
-		GameObject newPowerup = Instantiate(_PowerupTripleShotPrefab);
-		newPowerup.transform.parent = _powerupContainer;
-		_powerupTripleShotPool.Add(newPowerup);
-
-		return newPowerup;
+		_powerupCounter = 0;
+		Debug.Log(_powerupCounter);
+		GameObject firstPowerup = _powerupPool[_powerupCounter];
+		firstPowerup.SetActive(true);
+		return firstPowerup;
 	}
 
 
-	public void DespawnPowerupTripleShot(GameObject powerup)
+	public void DespawnPowerup(GameObject powerup)
 	{
 		powerup.SetActive(false);
 	}
+	#endregion
 }

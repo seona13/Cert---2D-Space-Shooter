@@ -12,25 +12,58 @@ public class Enemy : MonoBehaviour
 
 	[SerializeField]
 	private float _speed = 4f;
+	private bool _moving = true;
+
 	[SerializeField]
 	private int _killValue = 10;
 	private float _respawnPos = -7f;
 
+	private Animator _anim;
+	private Collider2D _collider;
+	private WaitForSeconds _deathDelay = new WaitForSeconds(2.35f);
+
+
+
+	private void Awake()
+	{
+		_anim = GetComponent<Animator>();
+		if (_anim == null)
+		{
+			Debug.LogError("Enemy missing Animator component.");
+		}
+		_anim.keepAnimatorControllerStateOnDisable = false;
+
+		_collider = GetComponent<Collider2D>();
+		if (_collider == null)
+		{
+			Debug.LogError("Enemy missing Collider component");
+		}
+	}
+
+
+	private void OnEnable()
+	{
+		_moving = true;
+		_anim.SetTrigger("EnemyResurrected");
+		_collider.enabled = true;
+	}
 
 
 	void Start()
 	{
-
 	}
 
 
 	void Update()
 	{
-		transform.Translate(Vector3.down * _speed * Time.deltaTime);
-
-		if (transform.position.y <= _respawnPos)
+		if (_moving)
 		{
-			transform.position = new Vector3(Random.Range(-9f, 9f), 7.5f, 0);
+			transform.Translate(Vector3.down * _speed * Time.deltaTime);
+
+			if (transform.position.y <= _respawnPos)
+			{
+				transform.position = new Vector3(Random.Range(-9f, 9f), 7.5f, 0);
+			}
 		}
 	}
 
@@ -40,13 +73,23 @@ public class Enemy : MonoBehaviour
 		if (other.CompareTag("Player"))
 		{
 			onPlayerCollision?.Invoke();
-			PoolManager.Instance.DespawnEnemy(gameObject);
 		}
 		else if (other.CompareTag("Laser"))
 		{
 			onEnemyDied?.Invoke(_killValue);
 			PoolManager.Instance.DespawnLaser(other.gameObject);
-			PoolManager.Instance.DespawnEnemy(gameObject);
 		}
+
+		StartCoroutine(EnemyDied());
+	}
+
+
+	IEnumerator EnemyDied()
+	{
+		_collider.enabled = false;
+		_moving = false;
+		_anim.SetTrigger("EnemyDied");
+		yield return _deathDelay;
+		PoolManager.Instance.DespawnEnemy(gameObject);
 	}
 }

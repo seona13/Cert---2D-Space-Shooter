@@ -16,24 +16,6 @@ public class Player : MonoBehaviour
 	private float _fireRate = 0.5f;
 	private float _nextFire = 0;
 
-	// POWER UPS
-	[Header("Power Ups")]
-	[SerializeField]
-	private float _powerupDuration = 5f;
-	private WaitForSeconds _powerupWaitDuration;
-	[SerializeField]
-	private GameObject _tripleShotPrefab;
-	[SerializeField]
-	private bool _tripleShotActive;
-	[SerializeField]
-	private float _speedMultiplier = 3f;
-	[SerializeField]
-	private bool _speedActive;
-	[SerializeField]
-	private GameObject _shieldVisual;
-	[SerializeField]
-	private bool _shieldActive;
-
 	// MOVING AND POSITIONING
 	[Header("Movement")]
 	[SerializeField]
@@ -47,12 +29,29 @@ public class Player : MonoBehaviour
 
 	// PLAYER DATA
 	[Header("Player Data")]
-	[SerializeField]
 	private int _score;
+	private int _lives = 3;
 	[SerializeField]
 	private int _maxLives = 3;
 	[SerializeField]
-	private int _lives = 3;
+	private GameObject _damageLeft;
+	[SerializeField]
+	private GameObject _damageRight;
+
+	// POWER UPS
+	[Header("Power Ups")]
+	[SerializeField]
+	private float _powerupDuration = 5f;
+	private WaitForSeconds _powerupWaitDuration;
+	[SerializeField]
+	private GameObject _tripleShotPrefab;
+	private bool _tripleShotActive;
+	[SerializeField]
+	private float _speedMultiplier = 3f;
+	private bool _speedActive;
+	[SerializeField]
+	private GameObject _shieldVisual;
+	private bool _shieldActive;
 
 
 
@@ -178,7 +177,15 @@ public class Player : MonoBehaviour
 		_lives--;
 		onUpdateLives?.Invoke(_lives);
 
-		if (_lives < 1)
+		if (_lives == 2)
+		{
+			_damageLeft.SetActive(true);
+		}
+		else if (_lives == 1)
+		{
+			_damageRight.SetActive(true);
+		}
+		else if (_lives < 1)
 		{
 			onPlayerDied?.Invoke();
 			gameObject.SetActive(false);

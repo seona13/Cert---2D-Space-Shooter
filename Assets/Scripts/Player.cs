@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
 	public static event Action onPlayerDied;
 	public static event Action<int> onUpdateScore;
 	public static event Action<int> onUpdateLives;
+	public static event Action onLaserFired;
 
 	// LASER INFO
 	private Vector3 _laserOffset = new Vector3(0, 1.1f, 0);
@@ -119,6 +120,8 @@ public class Player : MonoBehaviour
 				GameObject laser = PoolManager.Instance.RequestLaser();
 				laser.transform.position = transform.position + _laserOffset;
 			}
+
+			onLaserFired?.Invoke();
 		}
 	}
 

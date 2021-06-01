@@ -15,32 +15,31 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 	private void OnEnable()
 	{
 		GameManager.onGameOver += OnGameOver;
-		GameManager.onGameRestart += StartSpawning;
+		Asteroid.onStartSpawning += StartSpawning;
 	}
 
 
 	private void OnDisable()
 	{
 		GameManager.onGameOver -= OnGameOver;
-		GameManager.onGameRestart -= StartSpawning;
+		Asteroid.onStartSpawning -= StartSpawning;
 	}
 
 
 	void Start()
 	{
-		if (_running == false)
-		{
-			StartSpawning();
-			StartCoroutine(SpawnEnemy());
-			StartCoroutine(SpawnPowerup());
-			_running = true;
-		}
 	}
 
 
 	void StartSpawning()
 	{
-		_spawning = true;
+		if (_running == false)
+		{
+			_spawning = true;
+			StartCoroutine(SpawnEnemy());
+			StartCoroutine(SpawnPowerup());
+			_running = true;
+		}
 	}
 
 

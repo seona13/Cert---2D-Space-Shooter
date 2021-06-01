@@ -8,9 +8,12 @@ using Random = UnityEngine.Random;
 public class Enemy : MonoBehaviour
 {
 	public static event Action onPlayerCollision;
+	public static event Action<int> onEnemyDied;
 
 	[SerializeField]
 	private float _speed = 4f;
+	[SerializeField]
+	private int _killValue = 10;
 	private float _respawnPos = -7f;
 
 
@@ -41,6 +44,7 @@ public class Enemy : MonoBehaviour
 		}
 		else if (other.CompareTag("Laser"))
 		{
+			onEnemyDied?.Invoke(_killValue);
 			PoolManager.Instance.DespawnLaser(other.gameObject);
 			PoolManager.Instance.DespawnEnemy(gameObject);
 		}

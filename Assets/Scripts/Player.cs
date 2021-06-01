@@ -8,6 +8,8 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
 	public static event Action onPlayerDied;
+	public static event Action<int> onUpdateScore;
+	public static event Action<int> onUpdateLives;
 
 	// LASER INFO
 	private Vector3 _laserOffset = new Vector3(0, 1.1f, 0);
@@ -15,6 +17,7 @@ public class Player : MonoBehaviour
 	private float _nextFire = 0;
 
 	// POWER UPS
+	[Header("Power Ups")]
 	[SerializeField]
 	private float _powerupDuration = 5f;
 	private WaitForSeconds _powerupWaitDuration;
@@ -32,6 +35,7 @@ public class Player : MonoBehaviour
 	private bool _shieldActive;
 
 	// MOVING AND POSITIONING
+	[Header("Movement")]
 	[SerializeField]
 	private float _moveSpeed = 10f;
 	private Vector3 _startPos = new Vector3(0, -2.5f, 0);
@@ -42,6 +46,11 @@ public class Player : MonoBehaviour
 	private float _playFieldTop = 0;
 
 	// PLAYER DATA
+	[Header("Player Data")]
+	[SerializeField]
+	private int _score;
+	[SerializeField]
+	private int _maxLives = 3;
 	[SerializeField]
 	private int _lives = 3;
 
@@ -50,21 +59,25 @@ public class Player : MonoBehaviour
 	void OnEnable()
 	{
 		Enemy.onPlayerCollision += Damage;
+		Enemy.onEnemyDied += UpdateScore;
 		Powerup.onPowerupCollected += CollectPowerup;
+		GameManager.onGameRestart += NewGame;
 	}
 
 
 	void OnDisable()
 	{
 		Enemy.onPlayerCollision -= Damage;
+		Enemy.onEnemyDied -= UpdateScore;
 		Powerup.onPowerupCollected -= CollectPowerup;
+		GameManager.onGameRestart -= NewGame;
 	}
 
 
 	void Start()
 	{
-		transform.position = _startPos;
 		_powerupWaitDuration = new WaitForSeconds(_powerupDuration);
+		NewGame();
 	}
 
 
@@ -111,6 +124,26 @@ public class Player : MonoBehaviour
 	}
 
 
+	void NewGame()
+	{
+		gameObject.SetActive(true);
+		transform.position = _startPos;
+
+		_score = 0;
+		onUpdateScore?.Invoke(_score);
+
+		_lives = _maxLives;
+		onUpdateLives?.Invoke(_lives);
+	}
+
+
+	void UpdateScore(int amount)
+	{
+		_score += amount;
+		onUpdateScore?.Invoke(_score);
+	}
+
+
 	void RespectBounds()
 	{
 		float newX = transform.position.x;
@@ -143,11 +176,12 @@ public class Player : MonoBehaviour
 		}
 
 		_lives--;
+		onUpdateLives?.Invoke(_lives);
 
 		if (_lives < 1)
 		{
 			onPlayerDied?.Invoke();
-			Destroy(gameObject);
+			gameObject.SetActive(false);
 		}
 	}
 

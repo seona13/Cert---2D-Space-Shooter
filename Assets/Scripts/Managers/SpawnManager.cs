@@ -14,13 +14,15 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 
 	private void OnEnable()
 	{
-		Player.onPlayerDied += OnGameOver;
+		GameManager.onGameOver += OnGameOver;
+		GameManager.onGameRestart += StartSpawning;
 	}
 
 
 	private void OnDisable()
 	{
-		Player.onPlayerDied -= OnGameOver;
+		GameManager.onGameOver -= OnGameOver;
+		GameManager.onGameRestart -= StartSpawning;
 	}
 
 
@@ -28,11 +30,23 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 	{
 		if (_running == false)
 		{
-			_spawning = true;
+			StartSpawning();
 			StartCoroutine(SpawnEnemy());
 			StartCoroutine(SpawnPowerup());
 			_running = true;
 		}
+	}
+
+
+	void StartSpawning()
+	{
+		_spawning = true;
+	}
+
+
+	void OnGameOver()
+	{
+		_spawning = false;
 	}
 
 
@@ -61,11 +75,5 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 		}
 
 		_running = false;
-	}
-
-
-	void OnGameOver()
-	{
-		_spawning = false;
 	}
 }

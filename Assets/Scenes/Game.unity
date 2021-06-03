@@ -866,8 +866,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _defaultPoolSize: 10
+  _playerLaserPrefab: {fileID: 7023072598996423010, guid: ef8447798d5fb524d96fbbbac22ef9ba, type: 3}
   _enemyPrefab: {fileID: 1234509977085386926, guid: a425a9fe2d887e1428aef84092ce112b, type: 3}
-  _laserPrefab: {fileID: 7023072598996423010, guid: ef8447798d5fb524d96fbbbac22ef9ba, type: 3}
+  _enemyLaserPrefab: {fileID: 7023072598996423010, guid: 0a48a6fefc1d5df4b8f3f5087b4de470, type: 3}
   _powerupPrefabs:
   - {fileID: 7817283715309658373, guid: 78db336f8ef52a942b2e5bbd8298d140, type: 3}
   - {fileID: 8677184013575855921, guid: aaa06ab1f12c4cc4f938ed1e83526272, type: 3}

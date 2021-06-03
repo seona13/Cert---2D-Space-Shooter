@@ -17,6 +17,8 @@ public class Enemy : MonoBehaviour
 	[SerializeField]
 	private int _killValue = 10;
 	private float _respawnPos = -7f;
+	private Vector3 _laserOffset = new Vector3(0, -1.1f, 0);
+	private bool _canFire = true;
 
 	private Animator _anim;
 	private Collider2D _collider;
@@ -46,11 +48,13 @@ public class Enemy : MonoBehaviour
 		_moving = true;
 		_anim.SetTrigger("EnemyResurrected");
 		_collider.enabled = true;
+		_canFire = true;
 	}
 
 
 	void Start()
 	{
+		StartCoroutine(FireLaserRoutine());
 	}
 
 
@@ -80,7 +84,21 @@ public class Enemy : MonoBehaviour
 			PoolManager.Instance.DespawnLaser(other.gameObject);
 		}
 
-		StartCoroutine(EnemyDied());
+		if (other.CompareTag("EnemyLaser") == false)
+		{
+			StartCoroutine(EnemyDied());
+		}
+	}
+
+
+	IEnumerator FireLaserRoutine()
+	{
+		if (_canFire)
+		{
+			GameObject laser = PoolManager.Instance.RequestEnemyLaser();
+			laser.transform.position = transform.position + _laserOffset;
+		}
+		yield return new WaitForSeconds(Random.Range(2f, 5f));
 	}
 
 
@@ -88,6 +106,7 @@ public class Enemy : MonoBehaviour
 	{
 		_collider.enabled = false;
 		_moving = false;
+		_canFire = false;
 		_anim.SetTrigger("EnemyDied");
 		yield return _deathDelay;
 		PoolManager.Instance.DespawnEnemy(gameObject);

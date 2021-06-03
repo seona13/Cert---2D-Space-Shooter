@@ -96,6 +96,15 @@ public class Player : MonoBehaviour
 	}
 
 
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.CompareTag("EnemyLaser"))
+		{
+			Damage();
+		}
+	}
+
+
 	public void OnMove(InputValue input)
 	{
 		Vector2 inputVec = input.Get<Vector2>();

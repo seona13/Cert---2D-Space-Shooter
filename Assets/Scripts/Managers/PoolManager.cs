@@ -8,9 +8,11 @@ public class PoolManager : MonoSingleton<PoolManager>
 	[SerializeField]
 	private int _defaultPoolSize = 10;
 	[SerializeField]
+	private GameObject _playerLaserPrefab;
+	[SerializeField]
 	private GameObject _enemyPrefab;
 	[SerializeField]
-	private GameObject _laserPrefab;
+	private GameObject _enemyLaserPrefab;
 	[SerializeField]
 	private GameObject[] _powerupPrefabs;
 
@@ -23,8 +25,9 @@ public class PoolManager : MonoSingleton<PoolManager>
 	[SerializeField]
 	private Transform _powerupContainer;
 
+	private List<GameObject> _playerLaserPool;
 	private List<GameObject> _enemyPool;
-	private List<GameObject> _laserPool;
+	private List<GameObject> _enemyLaserPool;
 	private List<GameObject> _powerupPool;
 
 	private int _powerupCounter = 0;
@@ -34,18 +37,62 @@ public class PoolManager : MonoSingleton<PoolManager>
 	public override void Init()
 	{
 		base.Init();
+		_playerLaserPool = new List<GameObject>();
 		_enemyPool = new List<GameObject>();
-		_laserPool = new List<GameObject>();
+		_enemyLaserPool = new List<GameObject>();
 		_powerupPool = new List<GameObject>();
 	}
 
 
 	void Start()
 	{
-		GenerateEnemies(_defaultPoolSize);
 		GenerateLasers(_defaultPoolSize);
-		GeneratePowerups(_defaultPoolSize);
+		GenerateEnemies(_defaultPoolSize);
+		GenerateEnemyLasers(_defaultPoolSize);
+		GeneratePowerups(_defaultPoolSize * 2);
 	}
+
+
+	#region Lasers
+	List<GameObject> GenerateLasers(int amount)
+	{
+		for (int i = 0; i < amount; i++)
+		{
+			GameObject laser = Instantiate(_playerLaserPrefab);
+			laser.transform.parent = _laserContainer;
+			laser.SetActive(false);
+
+			_playerLaserPool.Add(laser);
+		}
+
+		return _playerLaserPool;
+	}
+
+
+	public GameObject RequestLaser()
+	{
+		foreach (GameObject laser in _playerLaserPool)
+		{
+			if (laser.activeInHierarchy == false)
+			{
+				laser.SetActive(true);
+				return laser;
+			}
+		}
+
+		GameObject newLaser = Instantiate(_playerLaserPrefab);
+		newLaser.transform.parent = _laserContainer;
+		_playerLaserPool.Add(newLaser);
+
+		return newLaser;
+	}
+
+
+	public void DespawnLaser(GameObject laser)
+	{
+		laser.SetActive(false);
+	}
+	#endregion
 
 
 	#region Enemies
@@ -90,25 +137,25 @@ public class PoolManager : MonoSingleton<PoolManager>
 	#endregion
 
 
-	#region Lasers
-	List<GameObject> GenerateLasers(int amount)
+	#region Enemy Lasers
+	List<GameObject> GenerateEnemyLasers(int amount)
 	{
 		for (int i = 0; i < amount; i++)
 		{
-			GameObject laser = Instantiate(_laserPrefab);
+			GameObject laser = Instantiate(_enemyLaserPrefab);
 			laser.transform.parent = _laserContainer;
 			laser.SetActive(false);
 
-			_laserPool.Add(laser);
+			_enemyLaserPool.Add(laser);
 		}
 
-		return _laserPool;
+		return _enemyLaserPool;
 	}
 
 
-	public GameObject RequestLaser()
+	public GameObject RequestEnemyLaser()
 	{
-		foreach (GameObject laser in _laserPool)
+		foreach (GameObject laser in _enemyLaserPool)
 		{
 			if (laser.activeInHierarchy == false)
 			{
@@ -117,15 +164,15 @@ public class PoolManager : MonoSingleton<PoolManager>
 			}
 		}
 
-		GameObject newLaser = Instantiate(_laserPrefab);
+		GameObject newLaser = Instantiate(_enemyLaserPrefab);
 		newLaser.transform.parent = _laserContainer;
-		_laserPool.Add(newLaser);
+		_enemyLaserPool.Add(newLaser);
 
 		return newLaser;
 	}
 
 
-	public void DespawnLaser(GameObject laser)
+	public void DespawnEnemyLaser(GameObject laser)
 	{
 		laser.SetActive(false);
 	}

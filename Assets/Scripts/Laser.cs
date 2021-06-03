@@ -19,17 +19,29 @@ public class Laser : MonoBehaviour
 
 	void Update()
 	{
-		transform.Translate(Vector3.up * _speed * Time.deltaTime);
-
-		if (transform.position.y >= _destroyPos)
+		if (gameObject.CompareTag("Laser"))
 		{
-			if (transform.parent.name == "TripleShot(Clone)")
+			transform.Translate(Vector3.up * _speed * Time.deltaTime);
+
+			if (transform.position.y >= _destroyPos)
 			{
-				Destroy(transform.parent.gameObject);
+				if (transform.parent.name == "TripleShot(Clone)")
+				{
+					Destroy(transform.parent.gameObject);
+				}
+				else
+				{
+					PoolManager.Instance.DespawnLaser(gameObject);
+				}
 			}
-			else
+		}
+		else if (gameObject.CompareTag("EnemyLaser"))
+		{
+			transform.Translate(Vector3.down * _speed * Time.deltaTime);
+
+			if (transform.position.y <= -_destroyPos)
 			{
-				PoolManager.Instance.DespawnLaser(gameObject);
+				PoolManager.Instance.DespawnEnemyLaser(gameObject);
 			}
 		}
 	}

@@ -44,4 +44,14 @@ public class GameManager : MonoBehaviour
 			onGameRestart?.Invoke();
 		}
 	}
+
+
+	public void OnQuit()
+	{
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+#else
+		Application.Quit();
+#endif
+	}
 }

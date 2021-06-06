@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
 	public static event Action<int> onUpdateScore;
 	public static event Action<int> onUpdateLives;
 	public static event Action onLaserFired;
+	public static event Action<int> onShieldCountChanged;
 
 	// LASER INFO
 	private Vector3 _laserOffset = new Vector3(0, 1.1f, 0);
@@ -53,6 +54,7 @@ public class Player : MonoBehaviour
 	[SerializeField]
 	private GameObject _shieldVisual;
 	private bool _shieldActive;
+	private int _shieldCount = 0;
 
 
 
@@ -181,8 +183,14 @@ public class Player : MonoBehaviour
 	{
 		if (_shieldActive)
 		{
-			_shieldVisual.SetActive(false);
-			_shieldActive = false;
+			_shieldCount--;
+			onShieldCountChanged?.Invoke(_shieldCount);
+
+			if (_shieldCount <= 0)
+			{
+				_shieldVisual.SetActive(false);
+				_shieldActive = false;
+			}
 			return;
 		}
 
@@ -218,6 +226,8 @@ public class Player : MonoBehaviour
 			case PowerupType.Shield:
 				_shieldVisual.SetActive(true);
 				_shieldActive = true;
+				_shieldCount = 3;
+				onShieldCountChanged?.Invoke(_shieldCount);
 				break;
 			default:
 				Debug.LogWarning("Player::CollectPowerup -- Unknown powerup type detected");

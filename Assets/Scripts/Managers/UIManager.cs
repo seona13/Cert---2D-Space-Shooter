@@ -16,6 +16,13 @@ public class UIManager : MonoBehaviour
 	[Space(10)]
 
 	[SerializeField]
+	private Image _shieldCounter;
+	[SerializeField]
+	private Sprite[] _shieldCounterImages;
+
+	[Space(10)]
+
+	[SerializeField]
 	private GameObject _gameOverScreen;
 	[SerializeField]
 	private Text _gameOverText;
@@ -28,6 +35,7 @@ public class UIManager : MonoBehaviour
 	{
 		Player.onUpdateScore += UpdateScore;
 		Player.onUpdateLives += UpdateLives;
+		Player.onShieldCountChanged += UpdateShieldCount;
 		GameManager.onGameOver += ShowGameOver;
 		GameManager.onGameRestart += HideGameOver;
 	}
@@ -37,6 +45,7 @@ public class UIManager : MonoBehaviour
 	{
 		Player.onUpdateScore -= UpdateScore;
 		Player.onUpdateLives -= UpdateLives;
+		Player.onShieldCountChanged -= UpdateShieldCount;
 		GameManager.onGameOver -= ShowGameOver;
 		GameManager.onGameRestart -= HideGameOver;
 	}
@@ -51,6 +60,12 @@ public class UIManager : MonoBehaviour
 	void UpdateLives(int amount)
 	{
 		_livesCounter.sprite = _livesCounterImages[amount];
+	}
+
+
+	void UpdateShieldCount(int amount)
+	{
+		_shieldCounter.sprite = _shieldCounterImages[amount];
 	}
 
 

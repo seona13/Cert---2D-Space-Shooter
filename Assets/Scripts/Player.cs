@@ -107,17 +107,15 @@ public class Player : MonoBehaviour
 	}
 
 
-	public void OnMove(InputValue input)
+	public void OnMove(InputAction.CallbackContext context)
 	{
-		Vector2 inputVec = input.Get<Vector2>();
-
-		_moveVec = new Vector3(inputVec.x, inputVec.y, 0);
+		_moveVec = context.ReadValue<Vector2>();
 	}
 
 
-	public void OnFire()
+	public void OnFire(InputAction.CallbackContext context)
 	{
-		if (Time.time > _nextFire)
+		if (context.performed && Time.time > _nextFire)
 		{
 			_nextFire = Time.time + _fireRate;
 

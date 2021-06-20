@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
 	public static event Action onPlayerDied;
+	public static event Action onPlayerDamaged;
 	public static event Action<int> onUpdateScore;
 	public static event Action<int> onUpdateLives;
 	public static event Action onLaserFired;
@@ -193,6 +194,7 @@ public class Player : MonoBehaviour
 		}
 
 		_lives--;
+		onPlayerDamaged?.Invoke();
 		onUpdateLives?.Invoke(_lives);
 
 		if (_lives == 2)

@@ -14,17 +14,17 @@ public class CameraBehaviour : MonoBehaviour
 
 	void OnEnable()
 	{
-		Player.onUpdateLives += TakeDamage;
+		Player.onPlayerDamaged += TakeDamage;
 	}
 
 
 	void OnDisable()
 	{
-		Player.onUpdateLives -= TakeDamage;
+		Player.onPlayerDamaged -= TakeDamage;
 	}
 
 
-	void TakeDamage(int amount)
+	void TakeDamage()
 	{
 		StartCoroutine(Shake(_shakeDuration, _shakeMagnitude));
 	}

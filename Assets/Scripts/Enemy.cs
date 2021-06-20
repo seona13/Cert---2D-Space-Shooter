@@ -110,6 +110,7 @@ public class Enemy : MonoBehaviour
 		_canFire = false;
 		_anim.SetTrigger("EnemyDied");
 		yield return _deathDelay;
+		SpawnManager.Instance.DespawnEnemy(this);
 		PoolManager.Instance.DespawnEnemy(gameObject);
 	}
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+	public static event Action onCloseUpgrades;
+
 	[SerializeField]
 	private Text _scoreText;
 	[SerializeField]
@@ -29,6 +32,11 @@ public class UIManager : MonoBehaviour
 	private bool _isGameOver = false;
 	private WaitForSeconds _flashSpeed = new WaitForSeconds(1f);
 
+	[Space(10)]
+
+	[SerializeField]
+	private GameObject _upgradeScreen;
+
 
 
 	void OnEnable()
@@ -38,6 +46,7 @@ public class UIManager : MonoBehaviour
 		Player.onShieldCountChanged += UpdateShieldCount;
 		GameManager.onGameOver += ShowGameOver;
 		GameManager.onGameRestart += HideGameOver;
+		SpawnManager.onWaveEnd += ShowUpgradeScreen;
 	}
 
 
@@ -48,6 +57,7 @@ public class UIManager : MonoBehaviour
 		Player.onShieldCountChanged -= UpdateShieldCount;
 		GameManager.onGameOver -= ShowGameOver;
 		GameManager.onGameRestart -= HideGameOver;
+		SpawnManager.onWaveEnd -= ShowUpgradeScreen;
 	}
 
 
@@ -92,5 +102,18 @@ public class UIManager : MonoBehaviour
 			yield return _flashSpeed;
 			_gameOverText.gameObject.SetActive(true);
 		}
+	}
+
+
+	void ShowUpgradeScreen()
+	{
+		_upgradeScreen.SetActive(true);
+	}
+
+
+	public void HideUpgradeScreen()
+	{
+		_upgradeScreen.SetActive(false);
+		onCloseUpgrades?.Invoke();
 	}
 }

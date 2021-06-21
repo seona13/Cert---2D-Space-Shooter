@@ -26,7 +26,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 	void OnEnable()
 	{
 		GameManager.onGameOver += OnGameOver;
-		Asteroid.onStartSpawning += OnLevelStart;
 		UIManager.onCloseUpgrades += OnLevelStart;
 	}
 
@@ -34,7 +33,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 	void OnDisable()
 	{
 		GameManager.onGameOver -= OnGameOver;
-		Asteroid.onStartSpawning -= OnLevelStart;
 		UIManager.onCloseUpgrades += OnLevelStart;
 	}
 
@@ -87,6 +85,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>
 			_spawning = false;
 			onWaveEnd?.Invoke();
 			_waveCount++;
+			onWaveStart?.Invoke();
 			_spawnCount = 0;
 			_killCount = 0;
 		}

@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
 	public static event Action onPlayerDamaged;
 	public static event Action<int> onUpdateScore;
 	public static event Action<int> onUpdateLives;
+	public static event Action<int> onUpdatePoints;
 	public static event Action onLaserFired;
 	public static event Action<int> onShieldCountChanged;
 
@@ -33,6 +34,7 @@ public class Player : MonoBehaviour
 	// PLAYER DATA
 	[Header("Player Data")]
 	private int _score;
+	private int _upgradePoints;
 	private int _lives = 3;
 	[SerializeField]
 	private int _maxLives = 3;
@@ -146,6 +148,9 @@ public class Player : MonoBehaviour
 
 		_lives = _maxLives;
 		onUpdateLives?.Invoke(_lives);
+
+		_upgradePoints = 50;
+		onUpdatePoints?.Invoke(_upgradePoints);
 	}
 
 

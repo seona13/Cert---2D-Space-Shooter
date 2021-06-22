@@ -9,9 +9,6 @@ public class Player : MonoBehaviour
 {
 	public static event Action onPlayerDied;
 	public static event Action onPlayerDamaged;
-	public static event Action<int> onUpdateScore;
-	public static event Action<int> onUpdateLives;
-	public static event Action<int> onUpdatePoints;
 	public static event Action onLaserFired;
 	public static event Action<int> onShieldCountChanged;
 
@@ -32,12 +29,7 @@ public class Player : MonoBehaviour
 	private float _playFieldTop = 0;
 
 	// PLAYER DATA
-	[Header("Player Data")]
-	private int _score;
-	private int _upgradePoints;
-	private int _lives = 3;
-	[SerializeField]
-	private int _maxLives = 3;
+	[Header("Player Damage")]
 	[SerializeField]
 	private GameObject _damageLeft;
 	[SerializeField]
@@ -64,25 +56,22 @@ public class Player : MonoBehaviour
 	void OnEnable()
 	{
 		Enemy.onPlayerCollision += Damage;
-		Enemy.onEnemyDied += UpdateScore;
 		Powerup.onPowerupCollected += CollectPowerup;
-		GameManager.onGameRestart += NewGame;
+		GameManager.onGameStart += NewGame;
 	}
 
 
 	void OnDisable()
 	{
 		Enemy.onPlayerCollision -= Damage;
-		Enemy.onEnemyDied -= UpdateScore;
 		Powerup.onPowerupCollected -= CollectPowerup;
-		GameManager.onGameRestart -= NewGame;
+		GameManager.onGameStart -= NewGame;
 	}
 
 
 	void Start()
 	{
 		_powerupWaitDuration = new WaitForSeconds(_powerupDuration);
-		NewGame();
 	}
 
 
@@ -142,22 +131,6 @@ public class Player : MonoBehaviour
 	{
 		gameObject.SetActive(true);
 		transform.position = _startPos;
-
-		_score = 0;
-		onUpdateScore?.Invoke(_score);
-
-		_lives = _maxLives;
-		onUpdateLives?.Invoke(_lives);
-
-		_upgradePoints = 50;
-		onUpdatePoints?.Invoke(_upgradePoints);
-	}
-
-
-	void UpdateScore(int amount)
-	{
-		_score += amount;
-		onUpdateScore?.Invoke(_score);
 	}
 
 
@@ -198,19 +171,18 @@ public class Player : MonoBehaviour
 			return;
 		}
 
-		_lives--;
 		onPlayerDamaged?.Invoke();
-		onUpdateLives?.Invoke(_lives);
 
-		if (_lives == 2)
+		int lives = PlayerData.Instance.GetLives();
+		if (lives == 2)
 		{
 			_damageLeft.SetActive(true);
 		}
-		else if (_lives == 1)
+		else if (lives == 1)
 		{
 			_damageRight.SetActive(true);
 		}
-		else if (_lives < 1)
+		else if (lives < 1)
 		{
 			onPlayerDied?.Invoke();
 			gameObject.SetActive(false);

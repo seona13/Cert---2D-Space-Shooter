@@ -36,27 +36,31 @@ public class UIManager : MonoBehaviour
 
 	[SerializeField]
 	private GameObject _upgradeScreen;
+	[SerializeField]
+	private Text _upgradePointsText;
 
 
 
 	void OnEnable()
 	{
-		Player.onUpdateScore += UpdateScore;
-		Player.onUpdateLives += UpdateLives;
+		PlayerData.onUpdateLives += UpdateLives;
+		PlayerData.onUpdateScore += UpdateScore;
+		PlayerData.onUpdatePoints += UpdatePoints;
 		Player.onShieldCountChanged += UpdateShieldCount;
 		GameManager.onGameOver += ShowGameOver;
-		GameManager.onGameRestart += HideGameOver;
+		GameManager.onGameStart += HideGameOver;
 		SpawnManager.onWaveEnd += ShowUpgradeScreen;
 	}
 
 
 	void OnDisable()
 	{
-		Player.onUpdateScore -= UpdateScore;
-		Player.onUpdateLives -= UpdateLives;
+		PlayerData.onUpdateLives -= UpdateLives;
+		PlayerData.onUpdateScore -= UpdateScore;
+		PlayerData.onUpdatePoints -= UpdatePoints;
 		Player.onShieldCountChanged -= UpdateShieldCount;
 		GameManager.onGameOver -= ShowGameOver;
-		GameManager.onGameRestart -= HideGameOver;
+		GameManager.onGameStart -= HideGameOver;
 		SpawnManager.onWaveEnd -= ShowUpgradeScreen;
 	}
 
@@ -79,6 +83,7 @@ public class UIManager : MonoBehaviour
 	}
 
 
+	#region Game Over
 	void ShowGameOver()
 	{
 		_gameOverScreen.SetActive(true);
@@ -103,8 +108,10 @@ public class UIManager : MonoBehaviour
 			_gameOverText.gameObject.SetActive(true);
 		}
 	}
+	#endregion
 
 
+	#region Upgrade Screen
 	void ShowUpgradeScreen()
 	{
 		_upgradeScreen.SetActive(true);
@@ -116,4 +123,11 @@ public class UIManager : MonoBehaviour
 		_upgradeScreen.SetActive(false);
 		onCloseUpgrades?.Invoke();
 	}
+
+
+	void UpdatePoints(int points)
+	{
+		_upgradePointsText.text = points.ToString();
+	}
+	#endregion
 }

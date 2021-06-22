@@ -7,7 +7,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 	public static event Action onGameOver;
-	public static event Action onGameRestart;
+	public static event Action onGameStart;
 
 	[SerializeField]
 	private bool _isGameOver;
@@ -16,15 +16,21 @@ public class GameManager : MonoBehaviour
 
 
 
-	private void OnEnable()
+	void OnEnable()
 	{
 		Player.onPlayerDied += GameOver;
 	}
 
 
-	private void OnDisable()
+	void OnDisable()
 	{
 		Player.onPlayerDied -= GameOver;
+	}
+
+
+	void Start()
+	{
+		onGameStart?.Invoke();
 	}
 
 
@@ -41,7 +47,7 @@ public class GameManager : MonoBehaviour
 		{
 			_isGameOver = false;
 			_player.SetActive(true);
-			onGameRestart?.Invoke();
+			onGameStart?.Invoke();
 		}
 	}
 

@@ -77,7 +77,7 @@ public class Enemy : MonoBehaviour
 		if (other.CompareTag("Player"))
 		{
 			onPlayerCollision?.Invoke();
-			onEnemyDied?.Invoke(0);
+			onEnemyDied?.Invoke(_killValue / 2);
 		}
 		else if (other.CompareTag("Laser"))
 		{

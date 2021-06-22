@@ -9,9 +9,11 @@ public class PlayerData : MonoSingleton<PlayerData>
 	public static event Action<int> onUpdateLives;
 	public static event Action<int> onUpdateScore;
 	public static event Action<int> onUpdatePoints;
+	public static event Action<int> onUpdateLivesCost;
 
 	private int _maxLives = 3;
 	private int _currentLives;
+	private int _livesCost;
 	private int _score;
 	private int _upgradePoints;
 
@@ -22,6 +24,7 @@ public class PlayerData : MonoSingleton<PlayerData>
 		GameManager.onGameStart += NewGame;
 		Player.onPlayerDamaged += PlayerDamaged;
 		Enemy.onEnemyDied += EnemyDied;
+		UIManager.onRepairPlayer += PlayerRepaired;
 	}
 
 
@@ -30,6 +33,7 @@ public class PlayerData : MonoSingleton<PlayerData>
 		GameManager.onGameStart -= NewGame;
 		Player.onPlayerDamaged -= PlayerDamaged;
 		Enemy.onEnemyDied -= EnemyDied;
+		UIManager.onRepairPlayer -= PlayerRepaired;
 	}
 
 
@@ -43,6 +47,9 @@ public class PlayerData : MonoSingleton<PlayerData>
 
 		_upgradePoints = 50;
 		onUpdatePoints?.Invoke(_upgradePoints);
+
+		_livesCost = 10;
+		onUpdateLivesCost?.Invoke(_livesCost);
 	}
 
 
@@ -60,6 +67,12 @@ public class PlayerData : MonoSingleton<PlayerData>
 	}
 
 
+	public int GetLivesCost()
+	{
+		return _livesCost;
+	}
+
+
 	void UpdateLives(int change)
 	{
 		_currentLives += change;
@@ -70,6 +83,17 @@ public class PlayerData : MonoSingleton<PlayerData>
 	void PlayerDamaged()
 	{
 		UpdateLives(-1);
+	}
+
+
+	void PlayerRepaired()
+	{
+		UpdateLives(1);
+
+		UpdatePoints(-_livesCost);
+
+		_livesCost *= 2;
+		onUpdateLivesCost(_livesCost);
 	}
 	#endregion
 

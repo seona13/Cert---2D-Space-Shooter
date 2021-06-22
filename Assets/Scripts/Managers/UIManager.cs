@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
 	public static event Action onCloseUpgrades;
+	public static event Action onRepairPlayer;
 
 	[SerializeField]
 	private Text _scoreText;
@@ -38,6 +39,10 @@ public class UIManager : MonoBehaviour
 	private GameObject _upgradeScreen;
 	[SerializeField]
 	private Text _upgradePointsText;
+	[SerializeField]
+	private Button _repairButton;
+	[SerializeField]
+	private Text _repairCostText;
 
 
 
@@ -46,6 +51,7 @@ public class UIManager : MonoBehaviour
 		PlayerData.onUpdateLives += UpdateLives;
 		PlayerData.onUpdateScore += UpdateScore;
 		PlayerData.onUpdatePoints += UpdatePoints;
+		PlayerData.onUpdateLivesCost += UpdateLivesCost;
 		Player.onShieldCountChanged += UpdateShieldCount;
 		GameManager.onGameOver += ShowGameOver;
 		GameManager.onGameStart += HideGameOver;
@@ -58,10 +64,17 @@ public class UIManager : MonoBehaviour
 		PlayerData.onUpdateLives -= UpdateLives;
 		PlayerData.onUpdateScore -= UpdateScore;
 		PlayerData.onUpdatePoints -= UpdatePoints;
+		PlayerData.onUpdateLivesCost -= UpdateLivesCost;
 		Player.onShieldCountChanged -= UpdateShieldCount;
 		GameManager.onGameOver -= ShowGameOver;
 		GameManager.onGameStart -= HideGameOver;
 		SpawnManager.onWaveEnd -= ShowUpgradeScreen;
+	}
+
+
+	void Start()
+	{
+		ShowUpgradeScreen();
 	}
 
 
@@ -114,7 +127,19 @@ public class UIManager : MonoBehaviour
 	#region Upgrade Screen
 	void ShowUpgradeScreen()
 	{
-		_upgradeScreen.SetActive(true);
+		if (_isGameOver == false)
+		{
+			_upgradeScreen.SetActive(true);
+
+			if (PlayerData.Instance.GetLives() >= 3)
+			{
+				_repairButton.interactable = false;
+			}
+			else
+			{
+				_repairButton.interactable = true;
+			}
+		}
 	}
 
 
@@ -128,6 +153,23 @@ public class UIManager : MonoBehaviour
 	void UpdatePoints(int points)
 	{
 		_upgradePointsText.text = points.ToString();
+	}
+
+
+	void UpdateLivesCost(int amount)
+	{
+		_repairCostText.text = amount + " points";
+	}
+
+
+	public void RepairPlayer()
+	{
+		onRepairPlayer?.Invoke();
+
+		if (PlayerData.Instance.GetLives() >= 3)
+		{
+			_repairButton.interactable = false;
+		}
 	}
 	#endregion
 }

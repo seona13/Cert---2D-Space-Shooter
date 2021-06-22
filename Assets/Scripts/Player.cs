@@ -56,6 +56,7 @@ public class Player : MonoBehaviour
 	void OnEnable()
 	{
 		Enemy.onPlayerCollision += Damage;
+		PlayerData.onUpdateLives += SetDamageIndicators;
 		Powerup.onPowerupCollected += CollectPowerup;
 		GameManager.onGameStart += NewGame;
 	}
@@ -64,6 +65,7 @@ public class Player : MonoBehaviour
 	void OnDisable()
 	{
 		Enemy.onPlayerCollision -= Damage;
+		PlayerData.onUpdateLives -= SetDamageIndicators;
 		Powerup.onPowerupCollected -= CollectPowerup;
 		GameManager.onGameStart -= NewGame;
 	}
@@ -173,19 +175,30 @@ public class Player : MonoBehaviour
 
 		onPlayerDamaged?.Invoke();
 
-		int lives = PlayerData.Instance.GetLives();
-		if (lives == 2)
-		{
-			_damageLeft.SetActive(true);
-		}
-		else if (lives == 1)
-		{
-			_damageRight.SetActive(true);
-		}
-		else if (lives < 1)
+		if (PlayerData.Instance.GetLives() < 1)
 		{
 			onPlayerDied?.Invoke();
 			gameObject.SetActive(false);
+		}
+	}
+
+
+	void SetDamageIndicators(int lives)
+	{
+		if (lives == 3)
+		{
+			_damageLeft.SetActive(false);
+			_damageRight.SetActive(false);
+		}
+		else if (lives == 2)
+		{
+			_damageLeft.SetActive(true);
+			_damageRight.SetActive(false);
+		}
+		else if (lives == 1)
+		{
+			_damageLeft.SetActive(true);
+			_damageRight.SetActive(true);
 		}
 	}
 

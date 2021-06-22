@@ -19,18 +19,14 @@ public class GameManager : MonoBehaviour
 	void OnEnable()
 	{
 		Player.onPlayerDied += GameOver;
+
+		onGameStart?.Invoke();
 	}
 
 
 	void OnDisable()
 	{
 		Player.onPlayerDied -= GameOver;
-	}
-
-
-	void Start()
-	{
-		onGameStart?.Invoke();
 	}
 
 

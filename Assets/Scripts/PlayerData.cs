@@ -25,6 +25,7 @@ public class PlayerData : MonoSingleton<PlayerData>
 		Player.onPlayerDamaged += PlayerDamaged;
 		Enemy.onEnemyDied += EnemyDied;
 		UIManager.onRepairPlayer += PlayerRepaired;
+		SkillEvents.onSkillBought += SkillBought;
 	}
 
 
@@ -34,6 +35,7 @@ public class PlayerData : MonoSingleton<PlayerData>
 		Player.onPlayerDamaged -= PlayerDamaged;
 		Enemy.onEnemyDied -= EnemyDied;
 		UIManager.onRepairPlayer -= PlayerRepaired;
+		SkillEvents.onSkillBought -= SkillBought;
 	}
 
 
@@ -57,6 +59,12 @@ public class PlayerData : MonoSingleton<PlayerData>
 	{
 		UpdateScore(amount);
 		UpdatePoints(amount);
+	}
+
+
+	void SkillBought(int amount)
+	{
+		UpdatePoints(-amount);
 	}
 
 

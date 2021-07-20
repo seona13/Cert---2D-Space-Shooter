@@ -71,7 +71,7 @@ public class Skill
 		if (currentAmount >= pointsCost)
 		{
 			hasEnoughResources = true;
-			SkillEvents.SkillBought(pointsCost);
+			SkillEvents.SkillBought(this, pointsCost);
 			Learn();
 		}
 
@@ -92,7 +92,7 @@ public class RequiredSkill
 [System.Serializable]
 public class SkillModifiers
 {
-	public enum ModifierType { Gold, Steel, Wood, Water, Population, Food }
+	public enum ModifierType { Speed, Ammo }
 
 	public ModifierType modifier;
 	public float amount;

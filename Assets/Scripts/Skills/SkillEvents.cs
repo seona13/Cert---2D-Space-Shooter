@@ -6,7 +6,7 @@ public class SkillEvents : MonoBehaviour
 {
 	public static Action<Skill> onSkillLearned;
 	public static Action<Skill> onSkillUnlocked;
-	public static Action<int> onSkillBought;
+	public static Action<Skill, int> onSkillBought;
 
 
 
@@ -22,8 +22,8 @@ public class SkillEvents : MonoBehaviour
 	}
 
 
-	public static void SkillBought(int amount)
+	public static void SkillBought(Skill skill, int amount)
 	{
-		onSkillBought?.Invoke(amount);
+		onSkillBought?.Invoke(skill, amount);
 	}
 }

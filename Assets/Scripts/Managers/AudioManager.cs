@@ -52,7 +52,7 @@ public class AudioManager : MonoBehaviour
 	}
 
 
-	void PlayLaser()
+	void PlayLaser(int amount)
 	{
 		_source.clip = _laser;
 		_source.volume = _laserVolume;

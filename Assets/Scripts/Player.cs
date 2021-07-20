@@ -9,8 +9,9 @@ public class Player : MonoBehaviour
 {
 	public static event Action onPlayerDied;
 	public static event Action onPlayerDamaged;
-	public static event Action onLaserFired;
+	public static event Action<int> onLaserFired;
 	public static event Action<int> onShieldCountChanged;
+	public static event Action onAmmoCollected;
 
 	// LASER INFO
 	private Vector3 _laserOffset = new Vector3(0, 1.1f, 0);
@@ -18,9 +19,6 @@ public class Player : MonoBehaviour
 	private float _nextFire = 0;
 
 	// MOVING AND POSITIONING
-	[Header("Movement")]
-	[SerializeField]
-	private float _moveSpeed = 10f;
 	private Vector3 _startPos = new Vector3(0, -2.5f, 0);
 	private Vector3 _moveVec = Vector3.zero; // movement direction of player
 	private float _screenLeft = -11f;
@@ -43,9 +41,6 @@ public class Player : MonoBehaviour
 	[SerializeField]
 	private GameObject _tripleShotPrefab;
 	private bool _tripleShotActive;
-	[SerializeField]
-	private float _speedMultiplier = 3f;
-	private bool _speedActive;
 	[SerializeField]
 	private GameObject _shieldVisual;
 	private bool _shieldActive;
@@ -79,14 +74,7 @@ public class Player : MonoBehaviour
 
 	void Update()
 	{
-		if (_speedActive)
-		{
-			transform.Translate(_moveVec * _moveSpeed * _speedMultiplier * Time.deltaTime);
-		}
-		else
-		{
-			transform.Translate(_moveVec * _moveSpeed * Time.deltaTime);
-		}
+		transform.Translate(_moveVec * PlayerData.Instance.GetMoveSpeed() * Time.deltaTime);
 
 		RespectBounds();
 	}
@@ -109,7 +97,7 @@ public class Player : MonoBehaviour
 
 	public void OnFire(InputAction.CallbackContext context)
 	{
-		if (context.performed && Time.time > _nextFire)
+		if (context.performed && PlayerData.Instance.GetAmmoCount() > 0 && Time.time > _nextFire)
 		{
 			_nextFire = Time.time + _fireRate;
 
@@ -124,7 +112,7 @@ public class Player : MonoBehaviour
 				laser.transform.position = transform.position + _laserOffset;
 			}
 
-			onLaserFired?.Invoke();
+			onLaserFired?.Invoke(-1);
 		}
 	}
 
@@ -210,14 +198,14 @@ public class Player : MonoBehaviour
 			case PowerupType.TripleShot:
 				StartCoroutine(TripleShotActive());
 				break;
-			case PowerupType.Speed:
-				StartCoroutine(SpeedActive());
-				break;
 			case PowerupType.Shield:
 				_shieldVisual.SetActive(true);
 				_shieldActive = true;
 				_shieldCount = 3;
 				onShieldCountChanged?.Invoke(_shieldCount);
+				break;
+			case PowerupType.Ammo:
+				onAmmoCollected?.Invoke();
 				break;
 			default:
 				Debug.LogWarning("Player::CollectPowerup -- Unknown powerup type detected");
@@ -231,13 +219,5 @@ public class Player : MonoBehaviour
 		_tripleShotActive = true;
 		yield return _powerupWaitDuration;
 		_tripleShotActive = false;
-	}
-
-
-	IEnumerator SpeedActive()
-	{
-		_speedActive = true;
-		yield return _powerupWaitDuration;
-		_speedActive = false;
 	}
 }

@@ -27,6 +27,13 @@ public class UIManager : MonoBehaviour
 	[Space(10)]
 
 	[SerializeField]
+	private Text _ammoCounter;
+	[SerializeField]
+	private Text _maxAmmo;
+
+	[Space(10)]
+
+	[SerializeField]
 	private GameObject _gameOverScreen;
 	[SerializeField]
 	private Text _gameOverText;
@@ -52,6 +59,8 @@ public class UIManager : MonoBehaviour
 		PlayerData.onUpdateScore += UpdateScore;
 		PlayerData.onUpdatePoints += UpdatePoints;
 		PlayerData.onUpdateLivesCost += UpdateLivesCost;
+		PlayerData.onUpdateAmmoCount += UpdateAmmoCount;
+		PlayerData.onUpdateMaxAmmo += UpdateMaxAmmo;
 		Player.onShieldCountChanged += UpdateShieldCount;
 		GameManager.onGameOver += ShowGameOver;
 		GameManager.onGameStart += HideGameOver;
@@ -65,6 +74,8 @@ public class UIManager : MonoBehaviour
 		PlayerData.onUpdateScore -= UpdateScore;
 		PlayerData.onUpdatePoints -= UpdatePoints;
 		PlayerData.onUpdateLivesCost -= UpdateLivesCost;
+		PlayerData.onUpdateAmmoCount -= UpdateAmmoCount;
+		PlayerData.onUpdateMaxAmmo -= UpdateMaxAmmo;
 		Player.onShieldCountChanged -= UpdateShieldCount;
 		GameManager.onGameOver -= ShowGameOver;
 		GameManager.onGameStart -= HideGameOver;
@@ -93,6 +104,18 @@ public class UIManager : MonoBehaviour
 	void UpdateShieldCount(int amount)
 	{
 		_shieldCounter.sprite = _shieldCounterImages[amount];
+	}
+
+
+	void UpdateAmmoCount(int amount)
+	{
+		_ammoCounter.text = amount.ToString();
+	}
+
+
+	void UpdateMaxAmmo(int amount)
+	{
+		_maxAmmo.text = amount.ToString();
 	}
 
 

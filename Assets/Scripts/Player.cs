@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
 	private Vector3 _laserOffset = new Vector3(0, 1.1f, 0);
 	private float _fireRate = 0.5f;
 	private float _nextFire = 0;
+	private bool _canShoot = false;
 
 	// MOVING AND POSITIONING
 	private Vector3 _startPos = new Vector3(0, -2.5f, 0);
@@ -54,6 +55,7 @@ public class Player : MonoBehaviour
 		PlayerData.onUpdateLives += SetDamageIndicators;
 		Powerup.onPowerupCollected += CollectPowerup;
 		GameManager.onGameStart += NewGame;
+		UIManager.onUpgradeScreenToggle += SetShootAbility;
 	}
 
 
@@ -63,6 +65,7 @@ public class Player : MonoBehaviour
 		PlayerData.onUpdateLives -= SetDamageIndicators;
 		Powerup.onPowerupCollected -= CollectPowerup;
 		GameManager.onGameStart -= NewGame;
+		UIManager.onUpgradeScreenToggle -= SetShootAbility;
 	}
 
 
@@ -97,7 +100,7 @@ public class Player : MonoBehaviour
 
 	public void OnFire(InputAction.CallbackContext context)
 	{
-		if (context.performed && PlayerData.Instance.GetAmmoCount() > 0 && Time.time > _nextFire)
+		if (_canShoot && context.performed && PlayerData.Instance.GetAmmoCount() > 0 && Time.time > _nextFire)
 		{
 			_nextFire = Time.time + _fireRate;
 
@@ -188,6 +191,12 @@ public class Player : MonoBehaviour
 			_damageLeft.SetActive(true);
 			_damageRight.SetActive(true);
 		}
+	}
+
+
+	void SetShootAbility(bool status)
+	{
+		_canShoot = status;
 	}
 
 

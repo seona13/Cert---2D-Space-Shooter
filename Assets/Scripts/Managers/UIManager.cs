@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 {
 	public static event Action onCloseUpgrades;
 	public static event Action onRepairPlayer;
+	public static event Action<bool> onUpgradeScreenToggle;
 
 	[SerializeField]
 	private Text _scoreText;
@@ -153,6 +154,7 @@ public class UIManager : MonoBehaviour
 		if (_isGameOver == false)
 		{
 			_upgradeScreen.SetActive(true);
+			onUpgradeScreenToggle?.Invoke(false);
 
 			if (PlayerData.Instance.GetLives() >= 3)
 			{
@@ -169,6 +171,7 @@ public class UIManager : MonoBehaviour
 	public void HideUpgradeScreen()
 	{
 		_upgradeScreen.SetActive(false);
+		onUpgradeScreenToggle?.Invoke(true);
 		onCloseUpgrades?.Invoke();
 	}
 
